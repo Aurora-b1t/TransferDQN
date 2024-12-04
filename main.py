@@ -44,7 +44,7 @@ for i in range(20):
         if dqn.memory_counter > st.BATCH_SIZE:
             if slot >= st.CHANGE_SLOT:
                 # 初始化经验池采样概率
-                dqn.update_probabilities(slot)
+                dqn.initial_probabilities(slot)
             for it in range(st.i_max):
                 dqn.learn(slot)
 

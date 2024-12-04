@@ -46,6 +46,10 @@ class TransferDQN(object):
         self.e = 0.95
 
     def choose_action(self, x):
+        if self.e < st.EPSILON_MAX and self.memory_counter % 2 == 0:
+            self.e = 0.998 * self.e + 0.002
+            print(f"epsilon:{self.e}")
+
         x = torch.unsqueeze(torch.FloatTensor(x), 0).to(device)
         if np.random.uniform() < self.e and self.memory_counter > 100:
             action_value = self.eval_net(x)
@@ -64,7 +68,7 @@ class TransferDQN(object):
         self.memory.append({'transition': transition, 'prob': sampling_prob})
         self.memory_counter += 1
 
-    def update_probabilities(self, slot):
+    def initial_probabilities(self, slot):
         # 根据源域和目标域经验池大小初始化概率
         self.source_memory = [exp for exp in self.memory if exp['transition'][-1] == 0]
         self.target_memory = [exp for exp in self.memory if exp['transition'][-1] == 1]
@@ -106,19 +110,23 @@ class TransferDQN(object):
 
         return td_error
 
-    def update_td_errors(self):
+    def update_probability(self):
         # 遍历经验池，计算每条经验的 TD-error 并更新采样概率
         for exp in self.memory:
             td_error = self.calculate_td_error(exp['transition'])
             if exp['transition'][-1] == 0:  # Source memory
-                exp['prob'] *= (1 + td_error / st.Beta)
+                exp['prob'] *= (1 - td_error / st.Beta)
+                if exp['prob'] < 0:
+                    exp['prob'] = 0
             else:  # Target memory
-                exp['prob'] /= (1 + td_error / st.Beta)
+                exp['prob'] /= (1 - td_error / st.Beta)
+                if exp['prob'] < 0:
+                    exp['prob'] = 0
 
-        # 归一化采样概率，确保总和为 1
+        ''''# 归一化采样概率，确保总和为 1
         total_prob = sum(exp['prob'] for exp in self.memory)
         for exp in self.memory:
-            exp['prob'] /= total_prob
+            exp['prob'] /= total_prob'''
 
     def learn(self, slot):
         self.learn_step_counter += 1
@@ -141,4 +149,4 @@ class TransferDQN(object):
 
         # 更新 TD-Error 和采样概率
         if slot >= st.CHANGE_SLOT:
-            self.update_td_errors()
+            self.update_probability()
