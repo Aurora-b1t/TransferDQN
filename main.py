@@ -11,6 +11,29 @@ env = markov()
 average_reward = []
 episode_losses = []
 
+#保存图片
+def save_plot(data, filename, title, xlabel, ylabel):
+    """
+    保存绘图为图片文件
+    :param data: 绘制的数据
+    :param filename: 保存的文件名
+    :param title: 图表标题
+    :param xlabel: x 轴标签
+    :param ylabel: y 轴标签
+    """
+    plt.figure(figsize=(80, 40))
+    plt.plot(data)
+    plt.title(title)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.tight_layout()
+
+    # 保存图片到当前目录
+    plt.savefig(filename)
+    plt.close()  # 关闭当前图表，释放内存
+    print(f"Plot saved to {filename}")
+
+
 for i in range(20):
     dqn = DQN()
     s = env.reset()  # 重置环境
@@ -65,15 +88,11 @@ for i in range(20):
             break
 
 # 训练完成后，绘制奖励图形
-plt.figure(figsize=(80, 40))
-
-# 绘制奖励
-plt.subplot(1, 1, 1)
-plt.plot(average_reward)
-plt.title('Average Reward')
-plt.xlabel('Slot')
-plt.ylabel('Average Reward')
-
-plt.tight_layout()
-plt.show()
+save_plot(
+    data=average_reward,
+    filename="average_reward.png",  # 保存到当前目录
+    title="Average Reward",
+    xlabel="Slot",
+    ylabel="Reward"
+)
 
