@@ -1,6 +1,6 @@
 BATCH_SIZE = 64 # 样本数量
 GAMMA = 0.9 # 奖励折扣
-i_max = 15 # 迭代次数
+i_max = 10 # 迭代次数
 Lambda = 10.0 # 比例系数
 LR = 0.001 # 学习率
 Beta = 50 # 比例系数

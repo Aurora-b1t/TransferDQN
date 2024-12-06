@@ -43,11 +43,11 @@ class TransferDQN(object):
         self.optimizer = torch.optim.Adam(self.eval_net.parameters(), lr=st.LR)
         self.loss_func = nn.MSELoss().to(device)
         self.device = device
-        self.e = 0.95
+        self.e = 0.05
 
     def choose_action(self, x):
-        if self.e < st.EPSILON_MAX and self.memory_counter % 2 == 0:
-            self.e = 0.998 * self.e + 0.002
+        if self.e < st.EPSILON_MAX:
+            self.e = 0.995 * self.e + 0.005
             print(f"epsilon:{self.e}")
 
         x = torch.unsqueeze(torch.FloatTensor(x), 0).to(device)

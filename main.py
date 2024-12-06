@@ -34,7 +34,7 @@ def save_plot(data, filename, title, xlabel, ylabel):
     print(f"Plot saved to {filename}")
 
 
-for i in range(20):
+for i in range(1):
     dqn = DQN()
     s = env.reset()  # 重置环境
     slot = 0
@@ -82,7 +82,7 @@ for i in range(20):
             dqn.eval_net = Net().to(dqn.device)
             dqn.target_net = Net().to(dqn.device)
             dqn.optimizer = torch.optim.Adam(dqn.eval_net.parameters(), lr=st.LR)
-            dqn.e = 0.95
+            #dqn.e = 0.95
 
         if slot >= st.END_SLOT:
             break
