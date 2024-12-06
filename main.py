@@ -14,22 +14,25 @@ episode_losses = []
 #保存图片
 def save_plot(data, filename, title, xlabel, ylabel):
     """
-    保存绘图为图片文件
+    保存绘图为图片文件，优化横纵坐标字体大小，图像尺寸调整为 80 x 40
     :param data: 绘制的数据
     :param filename: 保存的文件名
     :param title: 图表标题
     :param xlabel: x 轴标签
     :param ylabel: y 轴标签
     """
-    plt.figure(figsize=(80, 40))
-    plt.plot(data)
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    plt.tight_layout()
+    plt.figure(figsize=(80, 40))  # 图像大小 80 x 40
+    plt.plot(data, linewidth=2)  # 加粗曲线宽度
+    plt.title(title, fontsize=50)  # 标题字体大小
+    plt.xlabel(xlabel, fontsize=45)  # X轴标签字体大小
+    plt.ylabel(ylabel, fontsize=45)  # Y轴标签字体大小
+    plt.xticks(fontsize=40)  # X轴刻度字体大小
+    plt.yticks(fontsize=40)  # Y轴刻度字体大小
+    plt.grid(True, which="both", linestyle="--", linewidth=0.5)  # 添加网格线，虚线样式
+    plt.tight_layout()  # 自动调整布局以防止标签被裁剪
 
     # 保存图片到当前目录
-    plt.savefig(filename)
+    plt.savefig(filename, dpi=300)  # 提高分辨率
     plt.close()  # 关闭当前图表，释放内存
     print(f"Plot saved to {filename}")
 
